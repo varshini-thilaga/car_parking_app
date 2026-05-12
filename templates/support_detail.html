@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Support Ticket - Smart Parking{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h2 class="section-title mb-4">
+            <i class="fas fa-ticket-alt"></i> Support Ticket #{{ ticket.id }}
+        </h2>
+
+        <div class="card mb-4">
+            <div class="card-header" style="background: {% if ticket.priority == 'high' %}linear-gradient(135deg, #ef4444, #dc2626){% elif ticket.priority == 'medium' %}linear-gradient(135deg, #f59e0b, #d97706){% else %}linear-gradient(135deg, #3b82f6, #2563eb){% endif %};">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0" style="color: white;">{{ ticket.title }}</h5>
+                    {% if ticket.status == 'open' %}
+                        <span class="badge badge-info">OPEN</span>
+                    {% elif ticket.status == 'in_progress' %}
+                        <span class="badge" style="background: rgba(255,255,255,0.3); color: white;">IN PROGRESS</span>
+                    {% elif ticket.status == 'resolved' %}
+                        <span class="badge badge-success">RESOLVED</span>
+                    {% else %}
+                        <span class="badge badge-secondary">CLOSED</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <p class="text-muted">Ticket ID</p>
+                        <h5>#{{ ticket.id }}</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-muted">Priority</p>
+                        <h5>
+                            {% if ticket.priority == 'high' %}
+                                <span style="color: #ef4444;"><i class="fas fa-exclamation"></i> HIGH</span>
+                            {% elif ticket.priority == 'medium' %}
+                                <span style="color: #f59e0b;"><i class="fas fa-info"></i> MEDIUM</span>
+                            {% else %}
+                                <span style="color: #3b82f6;"><i class="fas fa-check"></i> LOW</span>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-muted">Created</p>
+                        <h5>{{ ticket.created_at|date:"M d, Y" }}</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-muted">Last Updated</p>
+                        <h5>{{ ticket.updated_at|date:"M d, Y" }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-message"></i> Description
+            </div>
+            <div class="card-body">
+                <p style="line-height: 1.8; color: #374151;">{{ ticket.description }}</p>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="fas fa-comments"></i> Support Status
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" style="border-left: 4px solid #3b82f6;">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Status Update:</strong>
+                    {% if ticket.status == 'open' %}
+                        Your ticket has been received and is waiting to be assigned to a support agent.
+                    {% elif ticket.status == 'in_progress' %}
+                        A support agent is currently working on your issue. You will be notified when it's resolved.
+                    {% elif ticket.status == 'resolved' %}
+                        Your issue has been resolved! Thank you for your patience.
+                    {% else %}
+                        This ticket has been closed. If you need further assistance, please create a new ticket.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <a href="{% url 'support' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Support
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary ms-2">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

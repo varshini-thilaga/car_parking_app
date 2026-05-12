@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Smart Parking{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+    <div class="col-lg-6">
+        <h1 class="display-4" style="background: linear-gradient(135deg, #6366f1, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            <i class="fas fa-parking"></i> Smart Parking Management
+        </h1>
+        <p class="lead text-muted mt-3" style="font-size: 1.2rem;">
+            Find and book parking spaces easily with our intelligent management system. Real-time availability, competitive pricing, and seamless booking experience.
+        </p>
+        <div class="mt-4">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-th-large"></i> Go to Dashboard
+                </a>
+                <a href="{% url 'parking_map' %}" class="btn btn-secondary btn-lg" style="background: #06b6d4; border: none;">
+                    <i class="fas fa-map"></i> View Parking Map
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-6 text-center">
+        <i class="fas fa-parking" style="font-size: 150px; color: #6366f1; opacity: 0.2;"></i>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon-box">
+                <i class="fas fa-car"></i>
+            </div>
+            <h3>{{ total_slots }}</h3>
+            <p>Total Parking Slots</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>{{ available_slots }}</h3>
+            <p>Available Now</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>{{ total_bookings }}</h3>
+            <p>Total Bookings</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-star"></i> Why Choose Us?
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check" style="color: #10b981; font-weight: bold;"></i>
+                        <strong> Real-time Availability</strong> - Always know which slots are available
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check" style="color: #10b981; font-weight: bold;"></i>
+                        <strong> Easy Booking</strong> - Book in seconds with our intuitive interface
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check" style="color: #10b981; font-weight: bold;"></i>
+                        <strong> Flexible Pricing</strong> - Competitive rates for all zones
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check" style="color: #10b981; font-weight: bold;"></i>
+                        <strong> 24/7 Support</strong> - We're always here to help
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Getting Started
+            </div>
+            <div class="card-body">
+                <ol class="list-decimal ps-4">
+                    <li class="mb-3"><strong>Create an Account</strong> - Register with your details</li>
+                    <li class="mb-3"><strong>View Available Slots</strong> - Check the parking map</li>
+                    <li class="mb-3"><strong>Book Your Slot</strong> - Select duration and confirm</li>
+                    <li class="mb-3"><strong>Park with Ease</strong> - No hassles, no worries!</li>
+                </ol>
+                <div class="mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-lock"></i> Your information is secure and encrypted
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card text-center">
+            <div class="card-body" style="padding: 3rem;">
+                <h3 style="color: #6366f1; margin-bottom: 1rem;">
+                    <i class="fas fa-rocket"></i> Ready to get started?
+                </h3>
+                <p class="text-muted mb-3">Join thousands of users who trust SmartPark for their parking needs</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Sign Up Now
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

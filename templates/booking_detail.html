@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Details - Smart Parking{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h2 class="section-title mb-4">
+            <i class="fas fa-receipt"></i> Booking Details
+        </h2>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Booking Information
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p class="text-muted">Booking ID</p>
+                        <h5>#{{ booking.id }}</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted">Status</p>
+                        {% if booking.status == 'active' %}
+                            <span class="badge badge-info" style="font-size: 1rem;">ACTIVE</span>
+                        {% elif booking.status == 'completed' %}
+                            <span class="badge badge-success" style="font-size: 1rem;">COMPLETED</span>
+                        {% else %}
+                            <span class="badge badge-danger" style="font-size: 1rem;">CANCELLED</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p class="text-muted">Parking Slot</p>
+                        <h5>{{ booking.slot.slot_number }} <small style="color: #06b6d4;">(Zone {{ booking.slot.zone }})</small></h5>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted">Floor</p>
+                        <h5>{{ booking.slot.floor }}</h5>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="text-muted">Vehicle Number</p>
+                        <h5>{{ booking.vehicle_number }}</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted">Booked On</p>
+                        <h5>{{ booking.booking_time|date:"M d, Y H:i" }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-clock"></i> Duration & Cost
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p class="text-muted">Start Time</p>
+                        <h5>{{ booking.start_time|date:"M d, Y H:i" }}</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted">End Time</p>
+                        <h5>
+                            {% if booking.end_time %}
+                                {{ booking.end_time|date:"M d, Y H:i" }}
+                            {% else %}
+                                <span class="text-muted">Not ended yet</span>
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="text-muted">Hourly Rate</p>
+                        <h5 style="color: #06b6d4;">${{ booking.slot.price_per_hour }}/hr</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted">Total Amount</p>
+                        <h5 style="color: #10b981; font-size: 1.5rem;">${{ booking.amount_paid }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if not review_exists and booking.status == 'completed' %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-star"></i> Leave a Review
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating">
+                            {% for i in "12345" %}
+                                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" style="display: none;">
+                                <label for="star{{ i }}" class="star" onclick="setRating({{ i }})">
+                                    <i class="fas fa-star"></i>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Comment (Optional)</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Share your experience..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-send"></i> Submit Review
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% elif review_exists %}
+        <div class="card mb-4" style="border-left: 5px solid #10b981;">
+            <div class="card-body">
+                <h6 style="color: #10b981;"><i class="fas fa-check-circle"></i> Thank you for your review!</h6>
+                <p class="text-muted mb-0">Your feedback helps us improve our service.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if booking.status == 'active' %}
+        <div class="card mb-4" style="background: #fef2f2; border-left: 5px solid #ef4444;">
+            <div class="card-body">
+                <h6 style="color: #ef4444;"><i class="fas fa-warning"></i> Active Booking</h6>
+                <p class="text-muted mb-2">This parking slot is currently in use.</p>
+                <form method="get" action="{% url 'release_slot' booking.id %}" style="display: inline;">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('Are you sure you want to release this slot?')) window.location='{% url 'release_slot' booking.id %}'">
+                        <i class="fas fa-check"></i> Release Slot
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <a href="{% url 'history' %}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Back to History
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setRating(value) {
+        document.getElementById('star' + value).checked = true;
+        updateStars(value);
+    }
+
+    function updateStars(value) {
+        for (let i = 1; i <= 5; i++) {
+            const star = document.querySelector(`label[for="star${i}"]`);
+            if (i <= value) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const checked = document.querySelector('input[name="rating"]:checked');
+        if (checked) {
+            updateStars(checked.value);
+        }
+    });
+</script>
+{% endblock %}

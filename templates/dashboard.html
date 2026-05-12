@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Smart Parking{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="section-title">
+        <i class="fas fa-th-large"></i> Dashboard
+    </h1>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon-box">
+                <i class="fas fa-bookmark"></i>
+            </div>
+            <h3>{{ stats.total_bookings }}</h3>
+            <p>Total Bookings</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="fas fa-play-circle"></i>
+            </div>
+            <h3>{{ stats.active_bookings }}</h3>
+            <p>Active Bookings</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>{{ stats.completed_bookings }}</h3>
+            <p>Completed</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                <i class="fas fa-parking"></i>
+            </div>
+            <h3>{{ stats.available_slots }}/{{ stats.total_slots }}</h3>
+            <p>Available Slots</p>
+        </div>
+    </div>
+</div>
+
+{% if active_booking %}
+<div class="card mb-4" style="border-left: 5px solid #10b981;">
+    <div class="card-body">
+        <h5 class="card-title">
+            <i class="fas fa-info-circle" style="color: #10b981;"></i> Current Active Booking
+        </h5>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Slot:</strong> {{ active_booking.slot.slot_number }} (Zone {{ active_booking.slot.zone }})</p>
+                <p><strong>Vehicle:</strong> {{ active_booking.vehicle_number }}</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="{% url 'booking_detail' active_booking.id %}" class="btn btn-sm btn-info">
+                    <i class="fas fa-eye"></i> View Details
+                </a>
+                <a href="{% url 'release_slot' active_booking.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Release this slot?')">
+                    <i class="fas fa-check"></i> Release
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h3 class="section-title">
+            <i class="fas fa-car"></i> Available Parking Slots
+        </h3>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    {% for slot in slots %}
+    <div class="col-md-3 col-sm-6">
+        <div class="card slot-card {% if slot.is_available %}slot-available{% else %}slot-occupied{% endif %}">
+            <div class="slot-number">{{ slot.slot_number }}</div>
+            <small>Zone {{ slot.zone }} | Floor {{ slot.floor }}</small>
+            <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                {% if slot.is_available %}
+                    <span class="badge badge-success">AVAILABLE</span>
+                    <p style="margin-top: 0.5rem; color: white; font-weight: 600;">${{ slot.price_per_hour }}/hr</p>
+                    <a href="{% url 'book_slot' slot.id %}" class="btn btn-light btn-sm" style="width: 100%; margin-top: 0.5rem;">Book Now</a>
+                {% else %}
+                    <span class="badge badge-danger">OCCUPIED</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h3 class="section-title">
+    <i class="fas fa-history"></i> Your Recent Bookings
+</h3>
+
+{% if bookings %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Slot</th>
+                <th>Zone</th>
+                <th>Vehicle</th>
+                <th>Booking Date</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td><strong>{{ booking.slot.slot_number }}</strong></td>
+                <td>{{ booking.slot.zone }}</td>
+                <td>{{ booking.vehicle_number }}</td>
+                <td>{{ booking.booking_time|date:"M d, Y H:i" }}</td>
+                <td>
+                    {% if booking.status == 'active' %}
+                        <span class="badge badge-info">ACTIVE</span>
+                    {% elif booking.status == 'completed' %}
+                        <span class="badge badge-success">COMPLETED</span>
+                    {% else %}
+                        <span class="badge badge-danger">CANCELLED</span>
+                    {% endif %}
+                </td>
+                <td>${{ booking.amount_paid }}</td>
+                <td>
+                    <a href="{% url 'booking_detail' booking.id %}" class="btn btn-sm btn-info">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card text-center">
+    <div class="card-body" style="padding: 3rem;">
+        <i class="fas fa-inbox" style="font-size: 3rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+        <p class="text-muted">No bookings yet. <a href="{% url 'parking_map' %}">Browse available slots</a></p>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <a href="{% url 'parking_map' %}" class="btn btn-primary me-2">
+            <i class="fas fa-map"></i> View Parking Map
+        </a>
+        <a href="{% url 'history' %}" class="btn btn-secondary">
+            <i class="fas fa-history"></i> View Full History
+        </a>
+    </div>
+</div>
+{% endblock %}

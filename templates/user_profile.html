@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile - Smart Parking{% endblock %}
+
+{% block content %}
+<h1 class="section-title mb-4">
+    <i class="fas fa-user-circle"></i> My Profile
+</h1>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-id-card"></i> Account Information
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="icon-box mx-auto" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <p class="text-muted mb-1">Username</p>
+                <h5 class="mb-3">{{ user.username }}</h5>
+                
+                <p class="text-muted mb-1">Email</p>
+                <h5 class="mb-3">{{ user.email }}</h5>
+                
+                <p class="text-muted mb-1">Member Since</p>
+                <h5>{{ user.date_joined|date:"M d, Y" }}</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-edit"></i> Edit Profile
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">
+                            <i class="fas fa-phone"></i> Phone Number
+                        </label>
+                        {{ form.phone }}
+                        <small class="text-muted d-block mt-1">Optional: Help us contact you for important updates</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="vehicle_color" class="form-label">
+                            <i class="fas fa-paint-brush"></i> Vehicle Color
+                        </label>
+                        {{ form.vehicle_color }}
+                        <small class="text-muted d-block mt-1">Optional: Helps identify your vehicle</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-bar"></i> Your Statistics
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="text-muted">Total Bookings</p>
+                        <h4 style="color: #6366f1;">{{ stats.total_bookings }}</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted">Total Spent</p>
+                        <h4 style="color: #10b981;">${{ stats.total_spent|floatformat:2 }}</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted">Average Rating</p>
+                        <h4 style="color: #f59e0b;">
+                            {% if stats.avg_rating %}
+                                {{ stats.avg_rating|floatformat:1 }} <i class="fas fa-star" style="color: #f59e0b;"></i>
+                            {% else %}
+                                No ratings yet
+                            {% endif %}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'history' %}" class="btn btn-info ms-2">
+            <i class="fas fa-history"></i> View Booking History
+        </a>
+    </div>
+</div>
+{% endblock %}

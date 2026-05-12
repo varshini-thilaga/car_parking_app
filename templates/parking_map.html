@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Parking Map - Smart Parking{% endblock %}
+
+{% block content %}
+<h1 class="section-title mb-4">
+    <i class="fas fa-map"></i> Parking Availability Map
+</h1>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3 style="color: #06b6d4;">{{ stats.total_available }}</h3>
+                            <p><i class="fas fa-check-circle" style="color: #10b981;"></i> Available</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3 style="color: #6366f1;">{{ stats.total_occupied }}</h3>
+                            <p><i class="fas fa-times-circle" style="color: #ef4444;"></i> Occupied</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3 style="color: #10b981;">{{ stats.total_available|add:stats.total_occupied }}</h3>
+                            <p><i class="fas fa-parking"></i> Total</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h3 style="color: #f59e0b;">{{ stats.occupancy_percentage }}%</h3>
+                            <p><i class="fas fa-chart-pie"></i> Occupancy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for zone_code, slots in zones_data.items %}
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-map-marker"></i> Zone {{ zone_code }}
+        <span class="badge badge-info float-end">{{ slots|length }} Slots</span>
+    </div>
+    <div class="card-body">
+        <div class="row g-2">
+            {% for slot in slots %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                {% if slot.is_available %}
+                    <a href="{% url 'book_slot' slot.id %}" class="text-decoration-none">
+                        <div class="slot-card slot-available" style="height: 120px; display: flex; flex-direction: column; justify-content: center;">
+                            <div class="slot-number">{{ slot.slot_number }}</div>
+                            <small>Floor {{ slot.floor }}</small>
+                            <small style="font-weight: 600;">${{ slot.price_per_hour }}/hr</small>
+                            <small style="margin-top: 0.5rem; opacity: 0.9;">Click to book</small>
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="slot-card slot-occupied" style="height: 120px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="slot-number">{{ slot.slot_number }}</div>
+                        <small>Floor {{ slot.floor }}</small>
+                        <small style="font-weight: 600;">OCCUPIED</small>
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Pricing - Smart Parking{% endblock %}
+
+{% block content %}
+<h1 class="section-title mb-4">
+    <i class="fas fa-tag"></i> Parking Pricing
+</h1>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon-box">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <h3>${{ pricing_info.avg_price|floatformat:2 }}</h3>
+            <p>Average Hourly Rate</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="fas fa-map-marker"></i>
+            </div>
+            <h3>{{ pricing_info.zones|length }}</h3>
+            <p>Parking Zones</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon-box" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <h3>24/7</h3>
+            <p>Open</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-list"></i> Hourly Rates by Zone
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-map-marker"></i> Zone</th>
+                                <th><i class="fas fa-dollar-sign"></i> Hourly Rate</th>
+                                <th><i class="fas fa-description"></i> Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style="color: #6366f1;">Zone A</strong></td>
+                                <td><h5 style="color: #10b981;">$5.00/hr</h5></td>
+                                <td><small class="text-muted">Premium location near entrance</small></td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: #06b6d4;">Zone B</strong></td>
+                                <td><h5 style="color: #10b981;">$4.00/hr</h5></td>
+                                <td><small class="text-muted">Standard location</small></td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: #f59e0b;">Zone C</strong></td>
+                                <td><h5 style="color: #10b981;">$3.00/hr</h5></td>
+                                <td><small class="text-muted">Economy location</small></td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: #ef4444;">Zone D</strong></td>
+                                <td><h5 style="color: #10b981;">$2.50/hr</h5></td>
+                                <td><small class="text-muted">Budget-friendly location</small></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-calculator"></i> Quick Calculator
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-clock"></i> Duration (Hours)</label>
+                    <input type="number" class="form-control" id="hours" value="2" min="1">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-map-marker"></i> Zone</label>
+                    <select class="form-select" id="zone">
+                        <option value="5">Zone A - $5.00/hr</option>
+                        <option value="4" selected>Zone B - $4.00/hr</option>
+                        <option value="3">Zone C - $3.00/hr</option>
+                        <option value="2.5">Zone D - $2.50/hr</option>
+                    </select>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, #f0f9ff, #f0f9ff); border: 2px solid #06b6d4;">
+                    <div class="card-body">
+                        <p class="text-muted mb-1">Estimated Cost</p>
+                        <h3 id="estimated" style="color: #10b981;">$8.00</h3>
+                        <small class="text-muted">+ taxes (if applicable)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Additional Info
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check" style="color: #10b981; margin-right: 8px;"></i>
+                        <small><strong>No booking fees</strong></small>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check" style="color: #10b981; margin-right: 8px;"></i>
+                        <small><strong>Free cancellation</strong></small>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check" style="color: #10b981; margin-right: 8px;"></i>
+                        <small><strong>Monthly passes available</strong></small>
+                    </li>
+                    <li>
+                        <i class="fas fa-check" style="color: #10b981; margin-right: 8px;"></i>
+                        <small><strong>Loyalty rewards</strong></small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-ticket-alt"></i> Monthly Passes
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card text-center" style="background: linear-gradient(135deg, #fef2f2, #fef2f2); border: 2px solid #ef4444;">
+                    <div class="card-body">
+                        <h5 style="color: #ef4444;">Basic</h5>
+                        <h3 style="color: #ef4444;">$99</h3>
+                        <small class="text-muted">/month</small>
+                        <p style="margin-top: 1rem; margin-bottom: 1rem;">Unlimited parking<br>Zone D only</p>
+                        <button class="btn btn-outline-danger btn-sm" style="color: #ef4444; border-color: #ef4444;">Choose</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center" style="background: linear-gradient(135deg, #fef3c7, #fef3c7); border: 2px solid #f59e0b;">
+                    <div class="card-body">
+                        <h5 style="color: #f59e0b;">Standard</h5>
+                        <h3 style="color: #f59e0b;">$149</h3>
+                        <small class="text-muted">/month</small>
+                        <p style="margin-top: 1rem; margin-bottom: 1rem;">Unlimited parking<br>Zones C & D</p>
+                        <button class="btn btn-outline-warning btn-sm" style="color: #f59e0b; border-color: #f59e0b;">Choose</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center" style="background: linear-gradient(135deg, #dbeafe, #dbeafe); border: 2px solid #3b82f6;">
+                    <div class="card-body">
+                        <h5 style="color: #3b82f6;">Premium</h5>
+                        <h3 style="color: #3b82f6;">$199</h3>
+                        <small class="text-muted">/month</small>
+                        <p style="margin-top: 1rem; margin-bottom: 1rem;">Unlimited parking<br>All zones</p>
+                        <button class="btn btn-outline-primary btn-sm" style="color: #3b82f6; border-color: #3b82f6;">Choose</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center" style="background: linear-gradient(135deg, #d1fae5, #d1fae5); border: 2px solid #10b981;">
+                    <div class="card-body">
+                        <h5 style="color: #10b981;">VIP</h5>
+                        <h3 style="color: #10b981;">$299</h3>
+                        <small class="text-muted">/month</small>
+                        <p style="margin-top: 1rem; margin-bottom: 1rem;">Premium + Priority<br>Support</p>
+                        <button class="btn btn-outline-success btn-sm" style="color: #10b981; border-color: #10b981;">Choose</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'parking_map' %}" class="btn btn-primary ms-2">
+            <i class="fas fa-map"></i> View Available Slots
+        </a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('hours').addEventListener('input', calculateCost);
+    document.getElementById('zone').addEventListener('change', calculateCost);
+
+    function calculateCost() {
+        const hours = document.getElementById('hours').value;
+        const rate = document.getElementById('zone').value;
+        const cost = (hours * rate).toFixed(2);
+        document.getElementById('estimated').textContent = '$' + cost;
+    }
+</script>
+{% endblock %}
