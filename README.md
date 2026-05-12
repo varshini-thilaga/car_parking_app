@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Smart Parking Management System
 
 A Django-based web application for managing parking slots.
@@ -76,3 +77,6 @@ smart_parking/
 ├── db.sqlite3
 └── manage.py
 ```
+=======
+# car_parking_app
+>>>>>>> 06246f18472829f34da8783a0e9bd9e5b39f82c5
