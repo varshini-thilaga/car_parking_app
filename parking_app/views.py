@@ -48,10 +48,16 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            UserProfile.objects.create(user=user)
-            messages.success(request, 'Account created successfully! Please log in.')
-            return redirect('login')
+            from django.contrib.auth.models import User
+            if User.objects.filter(username=form.cleaned_data['username']).exists():
+                messages.error(request, 'Username already exists. Please choose a different one.')
+            else:
+                user = form.save()
+                UserProfile.objects.get_or_create(user=user)
+                messages.success(request, 'Account created successfully! Please log in.')
+                return redirect('login')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
